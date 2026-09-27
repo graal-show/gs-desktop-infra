@@ -1,0 +1,31 @@
+schema_version = 1
+
+[daemon]
+listen_addr = "127.0.0.1:8764"
+token_file = "~/.graal-show/daemon/token"
+
+[runtime]
+kind = "graalvm_jvm"
+mode = "persistent_stdio"
+command = "java"
+args = ["-cp", "gs-lambda-cell.jar", "dev.graalshow.lambda.CellMain"]
+actor_reusable = false
+cell_reuse_scope = "same_tenant_generation"
+
+[granddaddy]
+enabled = true
+command = "erl"
+args = ["-noshell", "-pa", "runtime/ebin", "-s", "gs_granddaddy"]
+
+[cloudflare]
+enabled = false
+command = "cloudflared"
+hostname = ""
+
+[power]
+keep_awake = false
+
+[limits]
+max_parallel_cells = 4
+idle_freeze_ms = 45000
+idle_reclaim_ms = 180000
