@@ -3,13 +3,13 @@ project: graal-show-desktop
 allow_lazy_start: false
 source:
   repository: https://github.com/graal-show/gs-desktop-daemon.git
-  commit: 8bc6379cf564c243c8d867359cc6ffa572c443e9
+  commit: afcb27adb764156a7fa2beaeb17aed7dbd654c8a
   checkout_dir: tmp/dev/gs-desktop-daemon
 services:
   daemon:
     runtime: host
     build:
-      - ["cargo", "build", "--release"]
+      - ["cargo", "build", "--release", "--locked"]
     command: ["./target/release/gs-desktop-daemon"]
     environment:
       GS_DESKTOP_ADDR: "127.0.0.1:8764"
