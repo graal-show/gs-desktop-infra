@@ -30,6 +30,27 @@
     "wasm_generation",
     "declarative_only"
   ],
+  "release_activation": {
+    "runtime_family": "graal",
+    "preferred_strategy": "in_process_generation",
+    "fallback_strategy": "process_generation",
+    "allow_native_dynamic_library_hot_swap": false,
+    "code_middleware_routes_one_transaction": true,
+    "drain_timeout_ms": 300000,
+    "max_old_generations": 2,
+    "capabilities": {
+      "supports_process_generation": true,
+      "supports_in_process_generation": true,
+      "supports_parallel_generations": true,
+      "supports_pre_activation_health_check": true,
+      "supports_atomic_activation": true,
+      "supports_inflight_generation_pinning": true,
+      "supports_graceful_drain": true,
+      "supports_generation_rollback": true,
+      "supports_generation_fault_containment": false,
+      "code_loading_boundary": "graal_context"
+    }
+  },
   "invariants": {
     "routing_middleware_separate_from_compute": true,
     "route_change_restarts_standalone_server": false,
@@ -37,5 +58,5 @@
     "arbitrary_native_middleware_in_router_process": false,
     "bounded_old_generation_drain": true
   },
-  "rationale": "Keep JVM/Graal execution independent from routing; middleware code upgrades use separate supervised process generations."
+  "rationale": "Graal contexts/isolates are the intended in-process generation boundary, but process-wide failure containment is not yet certified. Therefore auto selection currently falls back to a side-by-side supervised process generation until conformance proves the missing capability."
 }
