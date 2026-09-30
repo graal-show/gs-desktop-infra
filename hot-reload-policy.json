@@ -48,7 +48,8 @@
       "supports_graceful_drain": true,
       "supports_generation_rollback": true,
       "supports_generation_fault_containment": false,
-      "code_loading_boundary": "graal_context"
+      "code_loading_boundary": "graal_context",
+      "in_process_generation_certified": false
     }
   },
   "invariants": {
