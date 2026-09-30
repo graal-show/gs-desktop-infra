@@ -3,7 +3,7 @@ project: graal-show-desktop
 allow_lazy_start: false
 source:
   repository: https://github.com/graal-show/gs-desktop-daemon.git
-  commit: 12f610fe25ae9d5f64626a45975ac1aa6ac1a490
+  commit: 5496461e320be1248f5a7c998c8ddac264bcc195
   checkout_dir: tmp/dev/gs-desktop-daemon
 services:
   daemon:
