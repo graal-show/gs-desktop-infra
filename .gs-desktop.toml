@@ -9,8 +9,20 @@ kind = "graalvm_jvm"
 mode = "persistent_stdio"
 command = "java"
 args = ["-cp", "gs-lambda-cell.jar", "dev.graalshow.lambda.CellMain"]
-actor_reusable = false
+actor_reusable = true
 cell_reuse_scope = "same_tenant_generation"
+tenant_security_boundary = "os_process_per_tenant_generation"
+affinity_modes = ["stateless", "route", "session", "route_session"]
+
+[runtime.isolates]
+max_stateless = 2
+max_route = 128
+max_session = 1024
+max_route_session = 2048
+max_contexts_per_isolate = 8
+session_idle_ttl_ms = 300000
+route_idle_ttl_ms = 3600000
+route_session_opt_in = true
 
 [granddaddy]
 enabled = true
