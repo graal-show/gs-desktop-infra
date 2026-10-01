@@ -1,4 +1,4 @@
-schema_version = 1
+schema_version = 2
 
 [daemon]
 listen_addr = "127.0.0.1:8764"
@@ -10,19 +10,69 @@ mode = "persistent_stdio"
 command = "java"
 args = ["-cp", "gs-lambda-cell.jar", "dev.graalshow.lambda.CellMain"]
 actor_reusable = true
-cell_reuse_scope = "same_tenant_generation"
-tenant_security_boundary = "os_process_per_tenant_generation"
-affinity_modes = ["stateless", "route", "session", "route_session"]
+cell_reuse_scope = "same_tenant_generation_security_profile"
+tenant_security_boundary = "os_process_per_tenant_generation_security_profile"
+affinity_modes = ["stateless", "route", "session", "route_session", "entity", "fault_domain", "data_partition", "composite"]
+
+[runtime.security_profiles.public_read_only]
+process_boundary = "separate_process_or_stronger"
+credential_scope = "read_only"
+network_policy = "public_dependencies_only"
+
+[runtime.security_profiles.authenticated]
+process_boundary = "separate_process_or_stronger"
+credential_scope = "tenant_user"
+
+[runtime.security_profiles.admin]
+process_boundary = "separate_process_or_stronger"
+credential_scope = "elevated_write"
+network_policy = "admin_dependencies"
 
 [runtime.isolates]
 max_stateless = 2
 max_route = 128
 max_session = 1024
 max_route_session = 2048
+max_entity = 4096
+max_fault_domain = 64
+max_data_partition = 1024
+max_composite = 2048
 max_contexts_per_isolate = 8
-session_idle_ttl_ms = 300000
-route_idle_ttl_ms = 3600000
-route_session_opt_in = true
+composite_opt_in = true
+
+[runtime.isolates.stateless_lifecycle]
+max_requests = 1000
+max_age_ms = 3600000
+
+[runtime.isolates.route_lifecycle]
+idle_ttl_ms = 3600000
+max_requests = 1000
+max_age_ms = 3600000
+
+[runtime.isolates.session_lifecycle]
+idle_ttl_ms = 300000
+max_age_ms = 3600000
+
+[runtime.isolates.route_session_lifecycle]
+idle_ttl_ms = 300000
+max_age_ms = 3600000
+
+[runtime.isolates.entity_lifecycle]
+idle_ttl_ms = 300000
+max_age_ms = 3600000
+
+[runtime.isolates.fault_domain_lifecycle]
+idle_ttl_ms = 900000
+max_requests = 1000
+max_age_ms = 3600000
+
+[runtime.isolates.data_partition_lifecycle]
+idle_ttl_ms = 900000
+max_age_ms = 3600000
+
+[runtime.isolates.composite_lifecycle]
+idle_ttl_ms = 300000
+max_age_ms = 3600000
 
 [granddaddy]
 enabled = true
