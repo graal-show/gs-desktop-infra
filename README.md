@@ -28,7 +28,18 @@ The desktop-contract workflow dual-runs the product's historical admission check
 
 ## Runtime semantics
 
-Graal-Show preserves JVM/Graal actor semantics. Process/runtime reuse policy, memory limits, cold/warm startup observability, restart/backoff, and deterministic actor teardown remain runtime-specific completion gates owned by the daemon; this infra migration does not weaken them.
+Graal Show uses one OS process/cgroup per tenant+deployment generation as the hard inter-tenant boundary. Within that process the runtime supports four isolate-affinity modes:
+
+- `stateless`: bounded pre-warmed pool;
+- `route`: isolate keyed by `route_id`;
+- `session`: isolate keyed by authenticated `session_id`, with a five-minute default idle TTL;
+- `route_session`: isolate keyed by both values for routes explicitly opting into user-private per-route heaps.
+
+`.gs-desktop.toml` carries hard caps for every affinity class and Context concurrency. `route_session` is deliberately opt-in because its cardinality can approach active-users × active-routes.
+
+For AOT Native Image deployments, multiple route/session isolates share the loaded image's executable/read-only code while owning disjoint mutable heaps. For Polyglot JS/Python/Wasm, each Engine isolate has its own guest heap/GC/JIT and Engine-local code cache, so high-cardinality session modes use tighter admission limits.
+
+The local daemon passes affinity metadata over the same generation-scoped framed protocol as cloud workers. Dev/local and production therefore use the same route/session ownership semantics rather than a desktop-only execution model.
 
 ## Hot-reload routing and middleware
 
