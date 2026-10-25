@@ -46,7 +46,7 @@
     "repository": "ORESoftware/ores-common-desktop-infra",
     "checkout_dir": "tmp/dev/ores-common-desktop-infra",
     "status": "pinned",
-    "revision": "21851fcb6ca59fe4cfe887d882dac78d90548ce4",
+    "revision": "c91eaa25bc7925c562443c258a1904c66c6e732b",
     "capabilities": [
       "cloudflare-policy",
       "conformance-suite",
